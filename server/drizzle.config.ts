@@ -1,0 +1,12 @@
+import { ENV } from "./src/config/env.config";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { defineConfig } from "drizzle-kit";
+
+export default defineConfig({
+  out: "./drizzle",
+  schema: "./src/db/schema.ts",
+  dialect: "postgresql",
+  dbCredentials: {
+    url: ENV.DATABASE_URL,
+  },
+});
