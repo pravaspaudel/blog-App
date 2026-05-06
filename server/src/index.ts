@@ -1,5 +1,6 @@
 import express from "express";
 import authRouter from "./routes/auth.route";
+import blogRouter from "./routes/blog.route";
 import loggerMiddleware from "./middlewares/logger.middleware";
 import { ENV } from "./config/env.config";
 import errorHandler from "./middlewares/error.middleware";
@@ -21,6 +22,7 @@ app.use(cookieParser());
 app.use(loggerMiddleware);
 
 app.use("/auth", authRouter);
+app.use("/api", blogRouter);
 
 app.use(errorHandler);
 

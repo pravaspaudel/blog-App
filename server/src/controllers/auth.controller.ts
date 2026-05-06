@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import asyncHandler from "../utils/asyncHandler";
-import { sucessResponse } from "../utils/response";
+import { successResponse } from "../utils/response";
 import { createUser, getUserByEmail } from "../services/user.service";
 import AppError from "../utils/AppError";
 import { comparePassword } from "../services/password.service";
@@ -30,7 +30,7 @@ const registerUser = asyncHandler(
       email: newUser.email,
     });
 
-    return sucessResponse(res, 201, "user created successfully", user[0]);
+    return successResponse(res, 201, "user created successfully", user[0]);
   },
 );
 
@@ -64,20 +64,20 @@ const loginUser = asyncHandler(
       email: user.email,
     };
 
-    return sucessResponse(res, 200, "login successful", safeUser);
+    return successResponse(res, 200, "login successful", safeUser);
   },
 );
 
 const logoutUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     deleteCookie(res);
-    return sucessResponse(res, 200, "logout successfully", {});
+    return successResponse(res, 200, "logout successfully", {});
   },
 );
 
 const authCheck = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    return sucessResponse(res, 200, "user verified successfully", req.user);
+    return successResponse(res, 200, "user verified successfully", req.user);
   },
 );
 

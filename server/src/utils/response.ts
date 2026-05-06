@@ -1,7 +1,7 @@
 import type { Response } from "express";
 import type { SuccessResponse, ErrorResponse } from "../types/response";
 
-export const sucessResponse = <T>(
+export const successResponse = <T>(
   res: Response,
   statusCode: number,
   message: string,
