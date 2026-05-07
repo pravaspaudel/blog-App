@@ -41,6 +41,7 @@ export default function Signup() {
 
       console.log(`got this result on calling fetchAPI: ${res}`);
       router.push("/"); // or /dashboard
+      router.refresh();
     } catch (err) {
       console.log("some error while signing in", err);
       toast.error("Something went wrong");
