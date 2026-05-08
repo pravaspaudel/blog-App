@@ -10,6 +10,7 @@ import {
   updateBlogService,
 } from "../services/blog.service";
 import AppError from "../utils/AppError";
+import { uploadImage } from "./cloudinary.controller";
 
 const createBlog = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -19,7 +20,15 @@ const createBlog = asyncHandler(
     if (!userId) {
       return next(new AppError("user should loggged in", 401));
     }
-    const newBlog = await createBlogService(parsedBlog, userId);
+
+    let thumbnailUrl = "";
+
+    if (req.file) {
+      const uploadedImg: any = await uploadImage(req.file);
+      thumbnailUrl = uploadedImg.secure_url;
+    }
+
+    const newBlog = await createBlogService(parsedBlog, userId, thumbnailUrl);
     return successResponse(res, 201, "blog created successfully", newBlog);
   },
 );

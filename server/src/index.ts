@@ -6,6 +6,7 @@ import { ENV } from "./config/env.config";
 import errorHandler from "./middlewares/error.middleware";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import blogActionsRouter from "./routes/blogActions.route";
 
 const app = express();
 const PORT = ENV.PORT;
@@ -23,6 +24,7 @@ app.use(loggerMiddleware);
 
 app.use("/auth", authRouter);
 app.use("/api", blogRouter);
+app.use("/api", blogActionsRouter);
 
 app.use(errorHandler);
 

@@ -3,11 +3,16 @@ import { blog } from "../db/schema";
 import { db } from "../db/db.config";
 import { eq } from "drizzle-orm";
 
-const createBlogService = async (b: blogType, userId: string) => {
+const createBlogService = async (
+  b: blogType,
+  userId: string,
+  thumbnailUrl: string,
+) => {
   const newBlog = await db
     .insert(blog)
     .values({
       ...b,
+      thumbnail: thumbnailUrl,
       createdBy: userId,
     })
     .returning();
@@ -21,7 +26,6 @@ const getBlogByIdService = async (id: string) => {
 
 const getBlogsService = async () => {
   const blogs = await db.select().from(blog);
-  console.log("list of blogs : ", blogs);
   return blogs;
 };
 
