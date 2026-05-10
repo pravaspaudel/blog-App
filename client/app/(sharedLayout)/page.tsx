@@ -1,73 +1,44 @@
-import Link from "next/link";
 import { serverFetch } from "@/utils/serverFetch";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { ArrowRight, BookOpen } from "lucide-react";
+import { BookOpen } from "lucide-react";
+import BlogComponent from "@/components/web/BlogComponent";
+import { BlogResponse } from "@/types/blog.types";
 
-type FetchedType = {
-  data: Blog[];
-};
-
-type Blog = {
-  id: string;
-  title: string;
-  content: string;
+type ApiResponse<T> = {
+  success: boolean;
+  message: string;
+  data: T;
 };
 
 export default async function Home() {
-  const fetched: FetchedType = await serverFetch("/api/blogs");
-  const blogs: Blog[] = fetched.data;
+  const fetched: ApiResponse<BlogResponse[]> = await serverFetch("/api/blogs");
+  const blogs = fetched.data;
 
   if (!blogs || blogs.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center mt-20 gap-3 text-muted-foreground">
-        <BookOpen className="w-10 h-10" />
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-muted-foreground">
+        <BookOpen className="h-12 w-12" />
         <p className="text-lg">No blogs available yet.</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto py-10 px-4 space-y-6">
-      <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight">All Blogs</h1>
-        <p className="text-muted-foreground">
-          {blogs.length} post{blogs.length !== 1 ? "s" : ""} published
-        </p>
-      </div>
-
-      <Separator />
-
-      <div className="space-y-4">
+    <main className="mx-auto max-w-3xl py-5 px-20">
+      <section className="flex flex-col gap-6">
         {blogs.map((blog, idx) => (
-          <Card key={idx} className="hover:shadow-md transition-shadow">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xl">{blog.title}</CardTitle>
-            </CardHeader>
-
-            <CardContent>
-              <p className="text-muted-foreground line-clamp-3">
-                {blog.content}
-              </p>
-            </CardContent>
-
-            <CardFooter>
-              <Button variant="ghost" size="sm" asChild>
-                <Link href={`/blogs/${blog.id}`}>
-                  Read more <ArrowRight className="ml-1 w-4 h-4" />
-                </Link>
-              </Button>
-            </CardFooter>
-          </Card>
+          <BlogComponent
+            key={idx}
+            id={blog.id}
+            title={blog.title}
+            thumbnail={blog.thumbnail}
+            content={blog.content}
+            createdAt={blog.createdAt}
+            author={blog.author}
+            stats={blog.stats}
+            userInteraction={blog.userInteraction}
+          />
         ))}
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }

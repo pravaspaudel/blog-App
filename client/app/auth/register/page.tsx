@@ -49,62 +49,68 @@ export default function Signup() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Register</CardTitle>
-        <CardDescription>create an account to get stared</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(submitForm)}>
-          <FieldSet>
-            <FieldGroup>
-              <Field>
-                <FieldLabel>Name :</FieldLabel>
-                <Input
-                  type="text"
-                  placeholder="enter your name..."
-                  {...register("username")}
-                />
-                {errors.username && (
-                  <p className="text-red-400 text-sm">
-                    {errors.username.message}
-                  </p>
-                )}
-              </Field>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-xl border-muted/30">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold">Register</CardTitle>
+          <CardDescription className="text-sm text-muted-foreground">
+            create an account to get stared
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit(submitForm)}>
+            <FieldSet>
+              <FieldGroup className="space-y-5">
+                <Field>
+                  <FieldLabel>Name :</FieldLabel>
+                  <Input
+                    type="text"
+                    placeholder="enter your name..."
+                    {...register("username")}
+                  />
+                  {errors.username && (
+                    <p className="text-red-400 text-sm">
+                      {errors.username.message}
+                    </p>
+                  )}
+                </Field>
 
-              <Field>
-                <FieldLabel>Email : </FieldLabel>
-                <Input
-                  type="email"
-                  placeholder="enter your mail..."
-                  {...register("email")}
-                />
-                {errors.email && (
-                  <p className="text-red-400 text-sm">{errors.email.message}</p>
-                )}
-              </Field>
+                <Field>
+                  <FieldLabel>Email : </FieldLabel>
+                  <Input
+                    type="email"
+                    placeholder="enter your mail..."
+                    {...register("email")}
+                  />
+                  {errors.email && (
+                    <p className="text-red-400 text-sm">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </Field>
 
-              <Field>
-                <FieldLabel>Password:</FieldLabel>
-                <Input
-                  type="password"
-                  placeholder="********"
-                  {...register("password")}
-                />
-                {errors.password && (
-                  <p className="text-red-400 text-sm">
-                    {errors.password.message}
-                  </p>
-                )}
-              </Field>
+                <Field>
+                  <FieldLabel>Password:</FieldLabel>
+                  <Input
+                    type="password"
+                    placeholder="********"
+                    {...register("password")}
+                  />
+                  {errors.password && (
+                    <p className="text-red-400 text-sm">
+                      {errors.password.message}
+                    </p>
+                  )}
+                </Field>
 
-              <Button disabled={isSubmitting} type="submit">
-                {isSubmitting ? "creating..." : "Register"}
-              </Button>
-            </FieldGroup>
-          </FieldSet>
-        </form>
-      </CardContent>
-    </Card>
+                <Button disabled={isSubmitting} type="submit">
+                  {isSubmitting ? "creating..." : "Register"}
+                </Button>
+              </FieldGroup>
+            </FieldSet>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

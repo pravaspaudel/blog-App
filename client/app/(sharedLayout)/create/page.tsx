@@ -100,6 +100,11 @@ export default function CreatePage() {
                     <p className="text-red-400">{errors.content.message}</p>
                   )}
                 </Field>
+
+                <Field className="max-w-sm">
+                  <FieldLabel>Thumbnail</FieldLabel>
+                  <Input type="file" />
+                </Field>
               </FieldGroup>
 
               <div className="pt-4 flex justify-end">

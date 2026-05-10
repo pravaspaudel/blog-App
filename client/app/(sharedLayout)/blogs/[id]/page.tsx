@@ -22,6 +22,7 @@ export default async function SinglePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  console.log(id);
 
   let blog: Blog | null = null;
 
@@ -45,7 +46,12 @@ export default async function SinglePage({
           </CardTitle>
 
           <p className="text-sm text-muted-foreground">
-            Created at: {new Date(blog.createdAt).toLocaleString()}
+            Created at:{" "}
+            {new Date(blog.createdAt).toLocaleString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
           </p>
         </CardHeader>
 

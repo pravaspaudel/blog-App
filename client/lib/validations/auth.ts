@@ -12,4 +12,4 @@ export const loginSchema = z.object({
 });
 
 export type RegisterSchema = z.infer<typeof registerSchema>;
-export type loginSchema = z.infer<typeof loginSchema>;
+export type LoginSchemaType = z.infer<typeof loginSchema>;
