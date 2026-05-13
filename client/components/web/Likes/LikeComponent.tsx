@@ -1,7 +1,7 @@
 "use client";
 
 import { Heart } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { useState } from "react";
 import fetchApi from "@/utils/fetchApi";
 import { useAuth } from "@/context/AuthContextProvider";

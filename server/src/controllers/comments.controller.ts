@@ -11,7 +11,7 @@ import { successResponse } from "../utils/response";
 
 const GetComments = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const blogId = req.params.blogId;
+    const blogId = req.params.blogid;
 
     if (!blogId || Array.isArray(blogId)) {
       return next(new AppError("invalid blog id", 400));
@@ -29,28 +29,28 @@ const GetComments = asyncHandler(
 
 const PostComments = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user!;
-    const body = req.body;
-    const blogId = req.params.blogId;
+    const user = req.user;
+    const blogId = req.params.blogid;
+    const { comment } = req.body;
 
-    const { comment } = body;
-
-    if (!comment || comment.length == 0) {
-      return next(new AppError("cannot post an empty comment", 400));
+    if (!user) {
+      return next(new AppError("Unauthorized", 401));
     }
-
-    console.log(user);
-
     if (!blogId || Array.isArray(blogId)) {
-      return next(new AppError("invalid blog id", 400));
+      return next(new AppError("Invalid blog id", 400));
     }
-
+    if (!comment || comment.trim().length === 0) {
+      return next(new AppError("Cannot post an empty comment", 400));
+    }
     const postedComment = await PostCommentService(blogId, user.id, comment);
 
+    if (!postedComment) {
+      return next(new AppError("Failed to post comment", 500));
+    }
     return successResponse(
       res,
       201,
-      "comment posted successfully",
+      "Comment posted successfully",
       postedComment,
     );
   },

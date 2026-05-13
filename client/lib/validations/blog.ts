@@ -8,4 +8,3 @@ export const blogSchema = z.object({
   content: z.string().min(15, "content should be at least 15 characters long"),
 });
 
-export type BlogSchema = z.infer<typeof blogSchema>;

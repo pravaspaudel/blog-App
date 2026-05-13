@@ -1,7 +1,8 @@
 import type { blogType } from "../types/blog.type";
-import { blog } from "../db/schema";
+import { blog, blogDetailsCount, userTable } from "../db/schema";
 import { db } from "../db/db.config";
-import { eq } from "drizzle-orm";
+import { eq, sql, desc } from "drizzle-orm";
+import AppError from "../utils/AppError";
 
 const createBlogService = async (
   b: blogType,
@@ -16,6 +17,19 @@ const createBlogService = async (
       createdBy: userId,
     })
     .returning();
+
+  //while creating a blog a empty row of its detail is stored
+  if (!newBlog[0]) {
+    throw new AppError("issue in creation of blog", 400);
+  }
+
+  await db.insert(blogDetailsCount).values({
+    blogId: newBlog[0]?.id,
+    likesCount: 0,
+    commentsCount: 0,
+    repostsCount: 0,
+  });
+
   return newBlog[0];
 };
 
@@ -25,7 +39,39 @@ const getBlogByIdService = async (id: string) => {
 };
 
 const getBlogsService = async () => {
-  const blogs = await db.select().from(blog);
+  const blogs = await db
+    .select({
+      id: blog.id,
+      title: blog.title,
+
+      // content: blog.content,
+      content: sql<string>`
+      LEFT(${blog.content},180)`,
+
+      thumbnail: blog.thumbnail,
+      createdAt: blog.createdAt,
+      author: {
+        username: userTable.username,
+        //will add the url of avatar later
+      },
+      stats: {
+        likesCount: sql<number>`COALESCE(${blogDetailsCount.likesCount}, 0)`,
+        commentsCount: sql<number>`COALESCE(${blogDetailsCount.commentsCount}, 0)`,
+        repostsCount: sql<number>`COALESCE(${blogDetailsCount.repostsCount}, 0)`,
+      },
+      userInteraction: {
+        isLiked: sql<boolean>` 
+        EXISTS(
+          SELECT 1 FROM blog_likes bl
+          WHERE bl.blog_id = ${blog.id}
+          AND bl.user_id = ${userTable.id}
+        )`,
+      },
+    })
+    .from(blog)
+    .leftJoin(blogDetailsCount, eq(blog.id, blogDetailsCount.blogId))
+    .leftJoin(userTable, eq(blog.createdBy, userTable.id))
+    .orderBy(desc(blog.createdAt));
   return blogs;
 };
 

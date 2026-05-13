@@ -5,6 +5,7 @@ import {
   uuid,
   timestamp,
   primaryKey,
+  integer,
 } from "drizzle-orm/pg-core";
 
 export const userTable = pgTable("users", {
@@ -63,6 +64,7 @@ export const blogComments = pgTable("blog_comments", {
     .references(() => blog.id, {
       onDelete: "cascade",
     }),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const blogReposts = pgTable(
@@ -89,3 +91,15 @@ export const blogReposts = pgTable(
     }),
   }),
 );
+
+export const blogDetailsCount = pgTable("blog_detail_counts", {
+  blogId: uuid("blog_id")
+    .references(() => blog.id, {
+      onDelete: "cascade",
+    })
+    .notNull()
+    .primaryKey(),
+  likesCount: integer("likes_count").default(0).notNull(),
+  commentsCount: integer("comment_count").default(0).notNull(),
+  repostsCount: integer("repost_count").default(0).notNull(),
+});

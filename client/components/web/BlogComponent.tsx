@@ -8,9 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import LikeButton from "./LikeComponent";
+import LikeButton from "./Likes/LikeComponent";
 import { BlogResponse } from "@/types/blog.types";
-import CommentComponent from "./CommentComponent";
+import CommentButton from "./Comments/CommentButton";
 import RepostComponent from "./RepostComponent";
 
 export default function BlogComponent(blog: BlogResponse) {
@@ -60,7 +60,7 @@ export default function BlogComponent(blog: BlogResponse) {
           initialLiked={blog.userInteraction.isLiked}
         />
 
-        <CommentComponent
+        <CommentButton
           blogId={blog.id}
           commentCount={blog.stats.commentsCount}
         />

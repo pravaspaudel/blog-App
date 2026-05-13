@@ -1,16 +1,43 @@
 import { db } from "../db/db.config";
-import { and, eq } from "drizzle-orm";
-import { blogComments, blogLikes } from "../db/schema";
+import { and, eq, sql } from "drizzle-orm";
+import { blogDetailsCount, blogLikes } from "../db/schema";
 
-const LikeBlogService = async (blogId: string, userId: string) => {
-  const blog = await db
-    .insert(blogLikes)
-    .values({
-      userId: userId,
-      blogId: blogId,
-    })
-    .returning();
-  return blog[0] ?? null;
+const ToogleLikeService = async (blogId: string, userId: string) => {
+  return await db.transaction(async (tx) => {
+    const existing = await tx
+      .select()
+      .from(blogLikes)
+      .where(and(eq(blogLikes.blogId, blogId), eq(blogLikes.userId, userId)));
+
+    if (existing.length > 0) {
+      await tx
+        .delete(blogLikes)
+        .where(and(eq(blogLikes.blogId, blogId), eq(blogLikes.userId, userId)));
+
+      await tx
+        .update(blogDetailsCount)
+        .set({
+          likesCount: sql`${blogDetailsCount.likesCount} - 1`,
+        })
+        .where(eq(blogDetailsCount.blogId, blogId));
+
+      return { liked: false };
+    }
+
+    await tx.insert(blogLikes).values({
+      blogId,
+      userId,
+    });
+
+    await tx
+      .update(blogDetailsCount)
+      .set({
+        likesCount: sql`${blogDetailsCount.likesCount} + 1`,
+      })
+      .where(eq(blogDetailsCount.blogId, blogId));
+
+    return { liked: true };
+  });
 };
 
 //the blogs liked by a myself
@@ -23,35 +50,14 @@ const GetBlogILikedService = async (userId: string) => {
   return blogs;
 };
 
-const ExistingLikeService = async (blogId: string, userId: string) => {
-  const like = await db
-    .select()
-    .from(blogLikes)
-    .where(and(eq(blogLikes.blogId, blogId), eq(blogLikes.userId, userId)));
-
-  return like[0] ?? null;
-};
-
-const RemoveLikeService = async (blogId: string, userId: string) => {
-  await db
-    .delete(blogLikes)
-    .where(and(eq(blogLikes.blogId, blogId), eq(blogLikes.userId, userId)));
-};
-
 //get the count of like for blogId
 const GetLikeCounts = async (blogId: string) => {
   const likes = await db
     .select()
-    .from(blogLikes)
-    .where(eq(blogLikes.blogId, blogId));
+    .from(blogDetailsCount)
+    .where(eq(blogDetailsCount.blogId, blogId));
 
   return likes.length;
 };
 
-export {
-  LikeBlogService,
-  GetBlogILikedService,
-  ExistingLikeService,
-  RemoveLikeService,
-  GetLikeCounts,
-};
+export { GetBlogILikedService, ToogleLikeService, GetLikeCounts };

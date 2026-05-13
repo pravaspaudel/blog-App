@@ -1,6 +1,8 @@
 import { serverFetch } from "@/utils/serverFetch";
 import { notFound } from "next/navigation";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import CommentInput from "@/components/web/Comments/CommentInput";
+import CommentLists from "@/components/web/Comments/CommentLists";
 
 type Blog = {
   id: string;
@@ -61,6 +63,13 @@ export default async function SinglePage({
           </p>
         </CardContent>
       </Card>
+
+      <div className="mt-6 space-y-6">
+        <h2 className="text-xl font-semibold">Comments</h2>
+        <CommentInput blogId={id} />
+      </div>
+
+      <CommentLists blogId={id} />
     </div>
   );
 }

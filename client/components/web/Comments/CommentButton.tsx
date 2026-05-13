@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { MessageCircle } from "lucide-react";
 
 type CommentButtonProps = {
@@ -7,7 +7,7 @@ type CommentButtonProps = {
   commentCount: number;
 };
 
-export default function CommentComponent(CommentProps: CommentButtonProps) {
+export default function CommentButton(CommentProps: CommentButtonProps) {
   return (
     <Link href={`/blogs/${CommentProps.blogId}`}>
       <Button
